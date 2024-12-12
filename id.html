@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motivational Study Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+        .quote {
+            font-size: 1.5em;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .study-progress, .subject {
+            margin: 20px;
+            text-align: center;
+        }
+        .task-list {
+            margin: 20px;
+        }
+        .tasks ul {
+            list-style-type: none;
+        }
+        .task-item {
+            margin: 10px 0;
+        }
+        .timer {
+            font-size: 2em;
+            text-align: center;
+        }
+        .subject-container {
+            margin: 30px;
+        }
+        .subject-btn {
+            margin: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Stay Motivated and Study Hard</h1>
+</header>
+
+<div class="quote">
+    <p id="quote">"The future depends on what you do today." - Mahatma Gandhi</p>
+</div>
+
+<!-- Add Subject Section -->
+<div class="subject-container">
+    <h3>Add New Subject</h3>
+    <input type="text" id="newSubject" placeholder="Enter subject name" />
+    <button class="subject-btn" onclick="addSubject()">Add Subject</button>
+</div>
+
+<div id="subjects"></div>
+
+<script>
+    // List of subjects
+    let subjects = [];
+
+    // Function to add a subject
+    function addSubject() {
+        const subjectName = document.getElementById("newSubject").value.trim();
+        if (subjectName !== "") {
+            const newSubject = {
+                name: subjectName,
+                timeStudied: 0,
+                tasks: []
+            };
+            subjects.push(newSubject);
+            renderSubjects();
+            document.getElementById("newSubject").value = ""; // Clear input field
+        }
+    }
+
+    // Function to render subjects and their details
+    function renderSubjects() {
+        const subjectsContainer = document.getElementById("subjects");
+        subjectsContainer.innerHTML = ""; // Clear previous content
+
+        subjects.forEach((subject, index) => {
+            // Create subject section
+            const subjectDiv = document.createElement("div");
+            subjectDiv.className = "subject";
+            subjectDiv.innerHTML = `
+                <h4>${subject.name}</h4>
+                <p>Time Studied: <span id="subject-time-${index}">0</span> hours</p>
+                <button onclick="incrementTime(${index})">Add 1 Hour</button>
+                
+                <div class="task-list">
+                    <h5>Tasks for ${subject.name}</h5>
+                    <input type="text" id="task-input-${index}" placeholder="Enter task" />
+                    <button onclick="addTask(${index})">Add Task</button>
+                    <ul id="task-list-${index}"></ul>
+                </div>
+            `;
+            subjectsContainer.appendChild(subjectDiv);
+
+            // Update time spent on each subject
+            document.getElementById(`subject-time-${index}`).innerText = subject.timeStudied;
+
+            // Render tasks for each subject
+            renderTasks(index);
+        });
+    }
+
+    // Function to increment study time for a subject
+    function incrementTime(subjectIndex) {
+        subjects[subjectIndex].timeStudied++;
+        document.getElementById(`subject-time-${subjectIndex}`).innerText = subjects[subjectIndex].timeStudied;
+    }
+
+    // Function to add a task for a subject
+    function addTask(subjectIndex) {
+        const taskInput = document.getElementById(`task-input-${subjectIndex}`).value.trim();
+        if (taskInput !== "") {
+            subjects[subjectIndex].tasks.push(taskInput);
+            document.getElementById(`task-input-${subjectIndex}`).value = ""; // Clear input field
+            renderTasks(subjectIndex);
+        }
+    }
+
+    // Function to render tasks for a subject
+    function renderTasks(subjectIndex) {
+        const taskList = document.getElementById(`task-list-${subjectIndex}`);
+        taskList.innerHTML = ""; // Clear previous tasks
+
+        subjects[subjectIndex].tasks.forEach((task, index) => {
+            const taskItem = document.createElement("li");
+            taskItem.innerHTML = `<input type="checkbox" id="task-${subjectIndex}-${index}" /> ${task}`;
+            taskList.appendChild(taskItem);
+        });
+    }
+
+    // Random quote generator
+    const quotes = [
+        "The future depends on what you do today. - Mahatma Gandhi",
+        "Believe in yourself and all that you are. - Christian D. Larson",
+        "The best way to predict the future is to create it. - Abraham Lincoln",
+        "Success is the sum of small efforts, repeated day in and day out. - Robert Collier"
+    ];
+    function displayRandomQuote() {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        document.getElementById('quote').innerText = quotes[randomIndex];
+    }
+    setInterval(displayRandomQuote, 10000);  // Change quote every 10 seconds
+</script>
+
+</body>
+</html>
